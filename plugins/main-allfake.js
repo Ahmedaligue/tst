@@ -223,14 +223,15 @@ try {
 
   global.botname = global.botname || namechannel
 
+  // CORREGIDO: Eliminado el video de YouTube
   global.rcanal = {
     contextInfo: {
       externalAdReply: {
         title: global.botname,
-        mediaType: 2,
-        previewType: "VIDEO",
+        mediaType: 1, // Cambiado a PHOTO
+        previewType: "PHOTO",
         thumbnailUrl: global.iconorcanal,
-        mediaUrl: "https://youtu.be/FKVuVneuwtg",
+        // mediaUrl eliminado - ya no enviará video de YouTube
         sourceUrl: ""
       }
     }
