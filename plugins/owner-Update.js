@@ -54,7 +54,7 @@ let handler = async (m, { conn, args }) => {
       const list = changed.slice(0, 10).map(f => `> 🎁 ${f}`).join('\n') || '> 🎁 *Todos los archivos actualizados*'
       response = `${banner.join('\n')}\n${list}\n\n> ✨ *¡Itsuki está lista para la navidad!* 🎄`
       // Reacción cuando se actualizó correctamente
-      await m.react('🎄')
+      await m.react('✅️')
     }
 
     const fq = await makeFkontak().catch(() => null)
