@@ -14,13 +14,12 @@ global.__dirname = (url) => dirname(fileURLToPath(url));
 global.roowner = ['573187418668'] // Solo el root owner (dueño principal)
 global.owner = [
    ['595972314588', '۪〬.࠭⤿ 👑 ⋅ 𝘿𝙖𝙫𝙞𝙙   𝙭𝙯𝙨𝙮', true],
-   ['573187418668', '𝙇𝙚𝙤   𝙭𝙯𝙨𝙮  🦇🩸', true],
+   ['573187418668', '@𝐥𝐞𝐨', true],
    ['5216641784469', 'BrayanOFC', true],
-// son pndjos todos menos David y Leo por poco también son
-   ['573133374132', 'YO SOY YO', true],
    ['51921826291', '𝐒𝐨𝐲𝐌𝐚𝐲𝐜𝐨𝐥 <𝟑', true],
    ['50493732693', 'Ado 🐢', true],
    ['5216671548329', 'Legna', true]
+   ['50496228919', '𝐒𝐨𝐩𝐨𝐫𝐭𝐞 𝐱 𝐒𝐭𝐚𝐟𝐟 𝐈𝐭𝐬𝐮𝐤𝐢 👨🏻‍💻👑', true]
 ];
 
 global.mods = ['573187418668', '595972314588', '51921826291']
@@ -44,7 +43,7 @@ global.apikey = 'ItsukiNakanoIA'
 global.botNumber = '18482389332'
 // Números y settings globales para varios códigos
 global.packname = 'La Mejor Bot De WhatsApp'
-global.botname = '𝐈𝐭𝐬𝐮𝐤𝐢 𝐍𝐚𝐤𝐚𝐧𝐨-𝐈𝐀 𝐖𝐚𝐛𝐨𝐭 👑✨'
+global.botname = '*☃️ 𝙄𝙩𝙨𝙪𝙠𝙞 𝙉𝙖𝙠𝙖𝙣𝙤 𝙉𝙚𝙬 𝙐𝙥 ❄️*'
 global.wm = '© 𝐋𝐞𝐨  𝐗𝐬𝐳𝐲'
 global.wm3 = '⫹⫺  multi-device'
 global.author = 'made by @Leo Xzsy'
