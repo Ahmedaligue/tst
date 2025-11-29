@@ -51,17 +51,20 @@ const handler = async (m, { conn, text, participants, isAdmin, isBotAdmin }) => 
     try {
       // Quitar admin
       await conn.groupParticipantsUpdate(m.chat, [targetUser], 'demote')
-      
+
       await m.react('✅')
-      
-      // Enviar confirmación
+
+      // Enviar confirmación etiquetando al usuario
       const fkontak = await makeFkontak()
-      await conn.reply(m.chat, 
-        `> ⓘ \`Admin removido correctamente\`\n> ⓘ \`Usuario:\` *@${targetUser.split('@')[0]}*`, 
-        fkontak || m, 
-        { mentions: [targetUser] }
-      )
       
+      await conn.sendMessage(m.chat, {
+        text: `> ⓘ \`Admin removido correctamente\`\n> ⓘ \`Usuario:\` *@${targetUser.split('@')[0]}*`,
+        mentions: [targetUser]
+      }, { 
+        quoted: m,
+        ...fkontak 
+      })
+
     } catch (error) {
       await m.react('❌')
     }
