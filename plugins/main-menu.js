@@ -31,17 +31,17 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
 `
 
     const categories = {
-      '*NAKANO-INFO*': ['main', 'info'],
-      '*INTELIGENCIA*': ['bots', 'ia'],
-      '*JUEGOS*': ['game', 'gacha'],
-      '*ECONOMÍA*': ['economy', 'rpgnk'],
-      '*GRUPOS*': ['group'],
-      '*DESCARGAS*': ['downloader'],
-      '*MULTIMEDIA*': ['sticker', 'audio', 'anime'],
-      '*TOOLS*': ['tools', 'advanced'],
-      '*BÚSQUEDA*': ['search', 'buscador'],
-      '*NK-PREM*': ['fun', 'premium', 'social', 'custom'],
-      '*NK-OWNER*': ['owner', 'creador'],
+      'NAKANO-INFO': ['main', 'info'],
+      'INTELIGENCIA': ['bots', 'ia'],
+      'JUEGOS': ['game', 'gacha'],
+      'ECONOMÍA': ['economy', 'rpgnk'],
+      'GRUPOS': ['group'],
+      'DESCARGAS': ['downloader'],
+      'MULTIMEDIA': ['sticker', 'audio', 'anime'],
+      'TOOLS': ['tools', 'advanced'],
+      'BÚSQUEDA': ['search', 'buscador'],
+      'NK-PREM': ['fun', 'premium', 'social', 'custom'],
+      'NK-OWNER': ['owner', 'creador'],
     }
 
     for (let catName in categories) {
@@ -49,7 +49,7 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
       let comandos = help.filter(menu => menu.tags.some(tag => catTags.includes(tag)))
 
       if (comandos.length) {
-        menuText += `> ꒰⌢ ʚ˚₊‧ ✐ ꒱ ☃️ \`${catName}\` ☃️\n
+        menuText += `> ꒰⌢ ʚ˚₊‧ ✐ ꒱ » \`${catName}\` «\n`
         let uniqueCommands = [...new Set(comandos.flatMap(menu => menu.help))]
         for (let cmd of uniqueCommands) {
           menuText += `> ੭੭ ﹙✰﹚ ❄︎ \`\`\`${_p}${cmd}\`\`\`\n`
