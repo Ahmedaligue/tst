@@ -30,6 +30,19 @@ clearTimeout(this)
 resolve()
 }, ms))
 
+// FUNCIÓN SAFE REPLACE PARA EVITAR ERRORES
+const safeReplace = (str, pattern, replacement) => {
+  if (typeof str !== 'string') return ''
+  return str.replace(pattern, replacement)
+}
+
+// FUNCIÓN PARA NORMALIZAR NÚMEROS
+const normalizeNumber = (num) => {
+  if (typeof num === 'number') return num.toString()
+  if (typeof num !== 'string') return ''
+  return num.replace(/[^0-9]/g, "")
+}
+
 export async function handler(chatUpdate) {
 this.msgqueque = this.msgqueque || []
 this.uptime = this.uptime || Date.now()
@@ -155,10 +168,27 @@ user.name = nuevo
 }} catch {}
 const chat = global.db.data.chats[m.chat]
 const settings = global.db.data.settings[this.user.jid]  
-const isROwner = [...global.owner.map((number) => number)].map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender)
+
+// LÍNEA CORREGIDA - USANDO safeReplace
+const isROwner = [...global.owner.map((number) => number)].map(v => {
+  const numStr = typeof v === 'string' ? v : String(v || '')
+  return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
+}).includes(m.sender)
+
 const isOwner = isROwner || m.fromMe
-const isPrems = isROwner || global.prems.map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender) || user.premium == true
-const isOwners = [this.user.jid, ...global.owner.map((number) => number + "@s.whatsapp.net")].includes(m.sender)
+
+// CORREGIDO - USANDO safeReplace PARA PREMIUM
+const isPrems = isROwner || global.prems.map(v => {
+  const numStr = typeof v === 'string' ? v : String(v || '')
+  return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
+}).includes(m.sender) || user.premium == true
+
+// CORREGIDO - USANDO safeReplace PARA OWNERS
+const isOwners = [this.user.jid, ...global.owner.map((number) => {
+  const numStr = typeof number === 'string' ? number : String(number || '')
+  return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
+})].includes(m.sender)
+
 if (opts["queque"] && m.text && !(isPrems)) {
 const queque = this.msgqueque, time = 1000 * 5
 const previousID = queque[queque.length - 1]
@@ -408,7 +438,7 @@ const msg = {
     private: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ᥲᥣ ᥴһᥲ𝗍 ⍴rі᥎ᥲძ᥆ ძᥱᥣ ᑲ᥆𝗍.\`*',
     admin: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ ᥱs ⍴ᥲrᥲ ᥲძmіᥒs ძᥱᥣ grᥙ⍴᥆.\`*',
     botAdmin: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ⍴ᥲrᥲ ⍴᥆ძᥱr ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ ᥱs ᥒᥱᥴᥱsᥲrі᥆ 𝗊ᥙᥱ ᥡ᥆ sᥱᥱ ᥲძmіᥒ.\`*',
-    unreg: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ᥒᥱᥴᥱsі𝗍ᥲs ᥱs𝗍ᥲr rᥱgіs𝗍rᥲძ᥆(ᥲ) ⍴ᥲrᥲ ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆, ᥱsᥴrіᑲᥱ #rᥱg ⍴ᥲrᥲ rᥱgіs𝗍rᥲr𝗍ᥱ.\`*',
+    unreg: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ᥒᥱᥴᥱsі𝗍ᥲs ᥱs𝗍ᥲr rᥱgіs𝗍rᥲძ᥆(ᥲ) ⍴ᥲrᥲ ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆, ᥱsᥴrіᑲ᥆ #rᥱg ⍴ᥲrᥲ rᥱgіs𝗍rᥲr𝗍ᥱ.\`*',
     restrict: '*\`˙˚ʚ₍ ᐢ. ̫ .ᐢ ₎ɞ˚ ᥴ᥆mᥲᥒძ᥆ rᥱs𝗍rіᥒgіძ᥆ ⍴᥆r ძᥱᥴіsі᥆ᥒ ძᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.\`*'
   }[type];
 if (msg) return conn.reply(m.chat, msg, m, rcanal).then(_ => m.react('✖️'))
