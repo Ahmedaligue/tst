@@ -110,7 +110,7 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
     // === Crear mensaje interactivo ===
     const interactiveMessage = proto.Message.InteractiveMessage.fromObject({
       body: proto.Message.InteractiveMessage.Body.fromObject({ text: menuText }),
-      footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '> ITՏᑌKI-ᑕᕼᗩᑎᐯ3 ฅ^•ﻌ•^ฅ' }),
+      footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '' }),
       header,
       nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
         buttons: nativeButtons
