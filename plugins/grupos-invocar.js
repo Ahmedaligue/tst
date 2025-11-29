@@ -12,7 +12,7 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, co
   const pesan = args.join` `;
   const oi = pesan 
     ? `> ⓘ \`Mensaje:\` *${pesan}*`
-    : `> ⓘ \`Invocación general\``;
+    : ` ⓘ \`Invocación general\``;
 
   let teks = `
 ╭━━━〔 *🌸 INVOCACIÓN GENERAL 🌸* 〕━━━⬣
