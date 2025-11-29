@@ -4,77 +4,49 @@ import Jimp from 'jimp'
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return conn.reply(m.chat, `> 🎄 *¡NAVIDAD EN APK!* 🎅
+    return conn.reply(m.chat, `> ⓘ USO INCORRECTO
 
-> 🎁 *DESCARGADOR APK NAVIDEÑO*
+> ❌ Debes ingresar el nombre de la aplicación
 
-> ❌ *Uso incorrecto*
-
-\`\`\`Debes ingresar el nombre de la aplicación\`\`\`
-
-> *Ejemplos navideños:*
+> 📝 Ejemplos:
 > • ${usedPrefix + command} WhatsApp
 > • ${usedPrefix + command} TikTok
 
-> 🎅 *Nota:* Busca y descarga APKs desde Aptoide`, m)
+> 💡 Busca y descarga APKs desde Aptoide`, m)
   }
 
   try {
-    await m.react('🎁')
+    await conn.sendMessage(m.chat, { react: { text: '🔍', key: m.key } })
 
     let searchA = await search(text)
     if (!searchA.length) {
-      await m.react('❌')
-      return conn.reply(m.chat, `> 🎄 *¡BÚSQUEDA SIN RESULTADOS!* 🎅
+      await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } })
+      return conn.reply(m.chat, `> ⓘ SIN RESULTADOS
 
-> 🔍 *Búsqueda sin resultados*
+> ❌ No se encontraron aplicaciones para: ${text}
 
-\`\`\`No se encontraron aplicaciones para: ${text}\`\`\`
-
-> *Sugerencias:*
-> • Verifica la ortografía
-> • Intenta con el nombre exacto
-> • Usa términos en inglés
-
-> 🎅 *¡Itsuki V3 te ayuda a buscar mejor!* 🎄`, m)
+> 💡 Verifica la ortografía o usa otro nombre`, m)
     }
 
     let data5 = await download(searchA[0].id)
 
-    let txt = `> 🎄 *¡INFORMACIÓN DE LA APK!* 🎅
+    let txt = `> ⓘ INFORMACION APK
 
-> 📱 *Nombre:*
-> \`\`\`${data5.name}\`\`\`
-> 📦 *Package:*
-> \`\`\`${data5.package}\`\`\`
-> 📅 *Última actualización:*
-> \`\`\`${data5.lastup}\`\`\`
-> 💾 *Tamaño:*
-\`\`\`${data5.size}\`\`\`
-> 📥 *Estado:*
-> \`\`\`Preparando descarga navideña...\`\`\`
-
-> 🎅 *¡Itsuki Nakano V3 - Tu asistente navideño!* 🎄`
+> 📱 ${data5.name}
+> 📦 ${data5.package}
+> 📅 ${data5.lastup}
+> 💾 ${data5.size}`
 
     await conn.sendFile(m.chat, data5.icon, 'thumbnail.jpg', txt, m)
 
     if (data5.size.includes('GB') || parseFloat(data5.size.replace(' MB', '')) > 999) {
-      await m.react('❌')
-      return conn.reply(m.chat, `> 🎄 *¡ARCHIVO DEMASIADO GRANDE!* 🎅
+      await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } })
+      return conn.reply(m.chat, `> ⓘ ARCHIVO DEMASIADO GRANDE
 
-> ⚠️ *Límite de tamaño excedido*
+> ❌ El archivo pesa: ${data5.size}
 
-\`\`\`El archivo pesa: ${data5.size}\`\`\`
-
-> 📏 *Límite máximo permitido:*
-\`\`\`999 MB\`\`\`
-
-> *Solución:*
-> • Busca una versión más ligera
-> • Descarga desde otro sitio
-> • Verifica el tamaño antes de descargar
-
-> 🎅 *¡Itsuki V3 recomienda buscar alternativas!* 🎄`, m)
+> 💡 Límite máximo: 999 MB
+> 💡 Busca una versión más ligera`, m)
     }
 
     let thumbnail = null
@@ -83,7 +55,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       img.resize(300, Jimp.AUTO)
       thumbnail = await img.getBufferAsync(Jimp.MIME_JPEG)
     } catch (err) {
-      console.log('🎄 Error al crear miniatura:', err)
+      console.log('Error al crear miniatura:', err)
     }
 
     await conn.sendMessage(
@@ -91,44 +63,29 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
       {
         document: { url: data5.dllink },
         mimetype: 'application/vnd.android.package-archive',
-        fileName: `${data5.name}_navidad.apk`,
-        caption: `> 🎄 *¡APK DESCARGADA!* 🎅
+        fileName: `${data5.name}.apk`,
+        caption: `> ⓘ APK DESCARGADA
 
-> 📱 *Aplicación:*
 > \`\`\`${data5.name}\`\`\`
 > 📦 *Package:*
 > \`\`\`${data5.package}\`\`\`
 > 💾 *Tamaño:*
-> \`\`\`${data5.size}\`\`\`
-> 🎅 *¡Disfruta tu aplicación navideña!*
-> 🎄 *¡Feliz Navidad con Itsuki Nakano V3!* 🎁`,
+> \`\`\`${data5.size}\`\`\``,
         ...(thumbnail ? { jpegThumbnail: thumbnail } : {})
       },
       { quoted: m }
     )
 
-    await m.react('✅')
+    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })
 
   } catch (error) {
     console.error(error)
-    await m.react('❌')
-    return conn.reply(m.chat, `> 🎄 *¡ERROR EN DESCARGA!* 🎅
+    await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } })
+    return conn.reply(m.chat, `> ⓘ ERROR
 
-> ❌ *Error detectado*
+> ❌ ${error.message || 'Error al procesar la descarga'}
 
-\`\`\`${error.message || 'Error al procesar la descarga'}\`\`\`
-
-> *Posibles causas:*
-> • Aplicación no disponible
-> • Problemas con Aptoide
-> • Error en la conexión
-
-> *Solución:*
-> • Verifica el nombre de la aplicación
-> • Intenta con otro término de búsqueda
-> • Prueba más tarde
-
-> 🎅 *¡Itsuki V3 lo intentará de nuevo!* 🎄`, m)
+> 💡 Verifica el nombre o intenta más tarde`, m)
   }
 }
 
@@ -136,6 +93,5 @@ handler.tags = ['downloader']
 handler.help = ['modoapk']
 handler.command = ['modapk2', 'apk2']
 handler.group = true
-// handler.premium = false
 
 export default handler
