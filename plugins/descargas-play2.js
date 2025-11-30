@@ -1,110 +1,100 @@
-import ytSearch from 'yt-search'
-import fetch from 'node-fetch'
+import yts from 'yt-search'    
+import fetch from 'node-fetch'    
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) return conn.reply(m.chat, `> ⓘ \`Uso:\` *${usedPrefix + command} nombre del video*`, m)
+async function apiAdonix(url) {    
+  const apiURL = `https://api-adonix.ultraplus.click/download/ytmp4?apikey=${global.apikey}&url=${encodeURIComponent(url)}`    
+  const res = await fetch(apiURL)    
+  const data = await res.json()    
 
-  try {
-    await m.react('🕒')
+  if (!data.status || !data.data?.url) throw new Error('API Adonix no devolvió datos válidos')    
+  return { url: data.data.url, title: data.data.title || 'Video sin título XD', fuente: 'Adonix' }    
+}    
 
-    const search = await ytSearch(text)
-    if (!search.videos.length) {
-      await m.react('❌')
-      return conn.reply(m.chat, '> ⓘ \`No se encontró ningún video\`', m)
-    }
+async function apiMayAPI(url) {
+  const apiURL = `https://mayapi.ooguy.com/ytdl?url=${encodeURIComponent(url)}&type=mp4&apikey=${global.APIKeys['https://mayapi.ooguy.com']}`
+  const res = await fetch(apiURL)
+  const data = await res.json()
 
-    const video = search.videos[0]
-
-    // Mostrar información del video con imagen
-    const info = `> ⓘ \`Título:\` *${video.title}*\n> ⓘ \`Autor:\` *${video.author.name}*\n> ⓘ \`Duración:\` *${video.timestamp}*\n> ⓘ \`Vistas:\` *${video.views.toLocaleString()}*`
-
-    await conn.sendMessage(m.chat, {
-      image: { url: video.thumbnail },
-      caption: info
-    }, { quoted: m })
-
-    if (command === 'play11') {
-      // Descargar video - USANDO LA MISMA LÓGICA DE PLAY2
-      try {
-        const result = await fetch(`https://fgsi.dpdns.org/api/downloader/youtube/v2?apikey=fgsiapi-335898e9-6d&url=${video.url}&type=mp4`).then(r => r.json())
-        if (!result?.data?.url) throw new Error('API sin resultado válido')
-
-        // Descargar como buffer (igual que play2)
-        const buffer = await fetch(result.data.url).then(res => res.buffer())
-
-        await conn.sendMessage(m.chat, {
-          video: buffer,
-          mimetype: 'video/mp4',
-          fileName: `${video.title}.mp4`,
-          caption: `> ⓘ \`Video:\` *${video.title}*`
-        }, { quoted: m })
-
-        await m.react('✅')
-      } catch (err) {
-        await m.react('❌')
-        // Intentar con otra API
-        try {
-          const altResult = await fetch(`https://api.nekolabs.fun/api/ytdl?url=${video.url}`).then(r => r.json())
-          if (altResult?.videoUrl) {
-            // Descargar como buffer (igual que play2)
-            const buffer = await fetch(altResult.videoUrl).then(res => res.buffer())
-
-            await conn.sendMessage(m.chat, {
-              video: buffer,
-              mimetype: 'video/mp4',
-              fileName: `${video.title}.mp4`,
-              caption: `> ⓘ \`Video:\` *${video.title}*`
-            }, { quoted: m })
-            await m.react('✅')
-          } else {
-            throw new Error('APIs fallaron')
-          }
-        } catch (e) {
-          conn.reply(m.chat, '> ⓘ \`Error al descargar el video\`', m)
-        }
-      }
-
-    } else {
-      // Descargar audio - USANDO LA MISMA LÓGICA
-      try {
-        const apiURL = `https://api.nekolabs.web.id/downloader/youtube/v1?url=${video.url}&format=mp3`
-        const result = await fetch(apiURL).then(r => r.json())
-
-        let audioUrl
-        if (result?.result?.downloadUrl) {
-          audioUrl = result.result.downloadUrl
-        } else {
-          // Fallback
-          const fallback = await fetch(`https://fgsi.dpdns.org/api/downloader/youtube/v2?apikey=fgsiapi-335898e9-6d&url=${video.url}&type=mp3`).then(r => r.json())
-          if (!fallback?.data?.url) throw new Error('No hay URL válida')
-          audioUrl = fallback.data.url
-        }
-
-        // Descargar audio como buffer
-        const buffer = await fetch(audioUrl).then(res => res.buffer())
-
-        await conn.sendMessage(m.chat, {
-          audio: buffer,
-          mimetype: 'audio/mpeg',
-          fileName: `${video.title}.mp3`,
-          ptt: false
-        }, { quoted: m })
-
-        await m.react('✅')
-      } catch (err) {
-        await m.react('❌')
-        conn.reply(m.chat, '> ⓘ \`Error al descargar el audio\`', m)
-      }
-    }
-
-  } catch (error) {
-    await m.react('❌')
-    conn.reply(m.chat, `> ⓘ \`Error:\` *${error.message}*`, m)
-  }
+  if (!data.status || !data.result?.url) throw new Error('API MayAPI no devolvió datos válidos')
+  return { url: data.result.url, title: data.result.title || 'Video sin título XD', fuente: 'MayAPI' }
 }
 
-handler.help = ['play10', 'play11']
-handler.tags = ['downloader']
-handler.command = ['play10', 'play11']
+async function ytdl(url) {    
+  try {    
+    console.log('🎬 Intentando con API Adonix...')    
+    return await apiAdonix(url)    
+  } catch (e1) {    
+    console.warn('⚠️ Falló Adonix:', e1.message)    
+    console.log('🎞️ Intentando con API MayAPI de respaldo...')    
+    return await apiMayAPI(url)    
+  }    
+}    
+
+let handler = async (m, { conn, text, usedPrefix }) => {    
+  const ctxErr = (global.rcanalx || {})    
+  const ctxWarn = (global.rcanalw || {})    
+  const ctxOk = (global.rcanalr || {})    
+
+  if (!text) {    
+    return conn.reply(m.chat, `    
+🌸📹 Itsuki Nakano - Descargar Video    
+
+📝 Uso:    
+• ${usedPrefix}play2 <nombre de la canción>    
+
+💡 Ejemplo:    
+• ${usedPrefix}play2 spy x family opening    
+
+🎯 Formato:    
+🎥 Video MP4 de alta calidad    
+
+🍱 ¡Disfruta tus videos con Itsuki Nakano! 🌸    
+    `.trim(), m, ctxWarn)    
+  }    
+
+  try {    
+    await conn.reply(m.chat, '*🔎🎬 Itsuki está buscando tu video*', m, ctxOk)    
+
+    const searchResults = await yts(text)    
+    if (!searchResults.videos.length) throw new Error('No se encontraron resultados')    
+
+    const video = searchResults.videos[0]    
+    const { url, title, fuente } = await ytdl(video.url)    
+
+    const caption = `    
+🌸✨ ¡Itsuki Nakano trae tu video! ✨🌸    
+💖 *Título:* ${title}    
+⏱ *Duración:* ${video.timestamp}    
+👤 *Autor:* ${video.author.name}    
+🔗 *URL:* ${video.url}    
+
+🌐 *API:* ${fuente}    
+🌷 ¡Disfruta y no olvides sonreír! 🌷    
+> 🍱 Gracias por elegirme para tus descargas     
+`.trim()    
+
+    const buffer = await fetch(url).then(res => res.buffer())    
+
+    await conn.sendMessage(    
+      m.chat,    
+      {    
+        video: buffer,    
+        mimetype: 'video/mp4',    
+        fileName: `${title}.mp4`,    
+        caption    
+      },    
+      { quoted: m }    
+    )    
+
+  } catch (e) {    
+    console.error('❌ Error en play2:', e)    
+    await conn.reply(m.chat, `❌ Error: ${e.message}`, m, ctxErr)    
+  }    
+}    
+
+handler.help = ['play2']    
+handler.tags = ['downloader']    
+handler.command = ['play2']
+handler.group = true    
 
 export default handler
