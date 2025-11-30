@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Oswald+Code&pause=1000&color=FF69B4&width=435&lines=🎀+Bienvenido+al+Repositorio;🌸+Itsuki+Nakano+IA+V3;💫+Versión+6.4.1+Oficial;✨+Creado+por+Leo;)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Oswald+Code&pause=1000&color=FF69B4&width=435&lines=🎀+Bienvenido+al+Repositorio;🌸+Itsuki+Nakano+IA+V3;💫+Versión+7.5.2+Oficial;✨+Creado+por+Leo;)](https://git.io/typing-svg)
 
 <!-- Banner Animado -->
 <img src="https://cdn.russellxz.click/b9042836.jpg" width="700" alt="Itsuki-NakanoV3"/>
