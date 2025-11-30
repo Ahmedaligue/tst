@@ -1,24 +1,32 @@
 let handler = async (m, { conn, usedPrefix, command }) => {
   const currency = global.currency || 'Yenes'
 
-  if (!db.data.chats[m.chat].economy && m.isGroup) {
-    return conn.reply(m.chat, '> \\`🚫 ECONOMIA DESACTIVADA\\`\n\n> \\`❌ Los comandos de economía están desactivados\\`\n\n> \\`📝 Administrador activa con:\\`\n> \\`${usedPrefix}economy on\\`', m)
+  // Verificar si la economía está activada
+  if (!global.db.data.chats[m.chat].economy && m.isGroup) {
+    return conn.reply(m.chat, '> \\`🚫 ECONOMIA DESACTIVADA\\`\n\n> \\`❌ Los comandos de economía están desactivados\\`\n\n> \\`📝 Administrador activa con:\\`\n> \\`' + usedPrefix + 'economy on\\`', m)
   }
 
   let user = global.db.data.users[m.sender]
+  if (!user) {
+    user = global.db.data.users[m.sender] = {
+      coin: 1000,
+      lastcrime: 0
+    }
+  }
+  
   user.lastcrime = user.lastcrime || 0
   user.coin = user.coin || 0
 
   const cooldown = 3 * 60 * 1000
   const ahora = Date.now()
 
-  if (ahora < user.lastcrime) {
-    const restante = user.lastcrime - ahora
+  if (ahora - user.lastcrime < cooldown) {
+    const restante = (user.lastcrime + cooldown) - ahora
     const wait = formatTimeMs(restante)
     return conn.reply(m.chat, `> \\`⏰ TIEMPO DE ESPERA\\`\n\n> \\`⏳ Debes esperar:\\` *${wait}*`, m)
   }
 
-  user.lastcrime = ahora + cooldown
+  user.lastcrime = ahora
 
   const evento = pickRandom(crimen)
   let cantidad
@@ -29,23 +37,22 @@ let handler = async (m, { conn, usedPrefix, command }) => {
 
     await m.react('✅')
     await conn.reply(m.chat, 
-      `> \\`✅ ACCION EXITOSA\\`\n\n` +
-      `> \\`${evento.mensaje}\\`\n\n` +
-      `> \\`💰 Ganancia:\\` *+¥${cantidad.toLocaleString()}*\n` +
-      `> \\`🎒 Cartera:\\` *¥${user.coin.toLocaleString()}*`,
+      '> \\`✅ ACCION EXITOSA\\`\n\n' +
+      '> \\`' + evento.mensaje + '\\`\n\n' +
+      '> \\`💰 Ganancia:\\` *+¥' + cantidad.toLocaleString() + '*\n' +
+      '> \\`🎒 Cartera:\\` *¥' + user.coin.toLocaleString() + '*',
       m
     )
   } else {
     cantidad = Math.floor(Math.random() * 1801) + 3000
-    user.coin -= cantidad
-    if (user.coin < 0) user.coin = 0
+    user.coin = Math.max(0, user.coin - cantidad)
 
     await m.react('❌')
     await conn.reply(m.chat,
-      `> \\`❌ ACCION FALLIDA\\`\n\n` +
-      `> \\`${evento.mensaje}\\`\n\n` +
-      `> \\`💸 Perdida:\\` *-¥${cantidad.toLocaleString()}*\n` +
-      `> \\`🎒 Cartera:\\` *¥${user.coin.toLocaleString()}*`,
+      '> \\`❌ ACCION FALLIDA\\`\n\n' +
+      '> \\`' + evento.mensaje + '\\`\n\n' +
+      '> \\`💸 Perdida:\\` *-¥' + cantidad.toLocaleString() + '*\n' +
+      '> \\`🎒 Cartera:\\` *¥' + user.coin.toLocaleString() + '*',
       m
     )
   }
@@ -63,7 +70,7 @@ function formatTimeMs(ms) {
   const min = Math.floor(totalSec / 60)
   const sec = totalSec % 60
   const partes = []
-  if (min) partes.push(`${min} minuto${min !== 1 ? 's' : ''}`)
+  if (min > 0) partes.push(`${min} minuto${min !== 1 ? 's' : ''}`)
   partes.push(`${sec} segundo${sec !== 1 ? 's' : ''}`)
   return partes.join(' ')
 }
@@ -104,19 +111,6 @@ const crimen = [
   { tipo: 'victoria', mensaje: "📝 Manipulaste un concurso académico para que ganara quien te pagó más" },
   { tipo: 'victoria', mensaje: "🎮 Creaste una aplicación de tutoría que minaba criptomonedas en segundo plano" },
   { tipo: 'victoria', mensaje: "📊 Vendiste datos de estudiantes a empresas de marketing educativo" },
-  { tipo: 'victoria', mensaje: "💼 Organizaste una feria universitaria falsa y cobraste stands a empresas" },
-  { tipo: 'victoria', mensaje: "📈 Creaste un esquema de inversión en 'educación tecnológica' que resultó ser piramidal" },
-  { tipo: 'victoria', mensaje: "🎭 Te hiciste pasar por reclutadora de una empresa grande y vendiste 'entrevistas garantizadas'" },
-  { tipo: 'victoria', mensaje: "💸 Lavaste dinero a través de una escuela de idiomas ficticia" },
-  { tipo: 'victoria', mensaje: "📱 Desarrollaste un plugin para plataformas educativas que robaba información de pago" },
-  { tipo: 'victoria', mensaje: "🎨 Falsificaste obras de arte académicas y las vendiste como originales" },
-  { tipo: 'victoria', mensaje: "🔍 Vendiste 'accesos prioritarios' a bibliotecas digitales restringidas" },
-  { tipo: 'victoria', mensaje: "💊 Creaste un suplemento 'mejorador cognitivo' falso y lo vendiste a estudiantes" },
-  { tipo: 'victoria', mensaje: "📡 Interceptaste señales de transmisión de clases privadas y las revendiste" },
-  { tipo: 'victoria', mensaje: "🎯 Organizaste un 'seminario de éxito académico' con contenido plagiado" },
-  { tipo: 'victoria', mensaje: "💳 Clonaste tarjetas de acceso a laboratorios de investigación" },
-  { tipo: 'victoria', mensaje: "📊 Vendiste estadísticas falsas de empleabilidad a universidades" },
-  { tipo: 'victoria', mensaje: "🎓 Creaste una agencia de intercambios estudiantiles ficticia" },
 
   // DERROTAS - Estilo Itsuki
   { tipo: 'derrota', mensaje: "📚 Intentaste falsificar un certificado pero el papel y sello eran de mala calidad, te descubrieron" },
@@ -133,24 +127,5 @@ const crimen = [
   { tipo: 'derrota', mensaje: "💻 Tu sitio de certificados falsos fue cerrado por las autoridades" },
   { tipo: 'derrota', mensaje: "📚 Intentaste vender acceso a base de datos pero era una trampa de seguridad" },
   { tipo: 'derrota', mensaje: "🍱 Te descubrieron ejerciendo sin licencia y te multaron fuertemente" },
-  { tipo: 'derrota', mensaje: "📝 Manipulaste calificaciones pero el sistema tenía registro de cambios" },
-  { tipo: 'derrota', mensaje: "🎓 El título falso que vendiste fue verificado y te demandaron por fraude" },
-  { tipo: 'derrota', mensaje: "📚 Las respuestas de examen que vendiste eran de la versión equivocada" },
-  { tipo: 'derrota', mensaje: "💻 Tu hackeo fue detectado y la universidad presentó cargos formales" },
-  { tipo: 'derrota', mensaje: "📖 El curso online falso fue reportado y perdiste todo lo recaudado" },
-  { tipo: 'derrota', mensaje: "🎮 Tu app minera fue detectada por antivirus y removida de las tiendas" },
-  { tipo: 'derrota', mensaje: "📊 Los datos que vendiste estaban encriptados y no pudiste acceder a ellos" },
-  { tipo: 'derrota', mensaje: "💼 La feria falsa fue descubierta por una empresa real que investigó" },
-  { tipo: 'derrota', mensaje: "📈 Tu esquema piramidal colapsó cuando los primeros inversionistas quisieron retirar" },
-  { tipo: 'derrota', mensaje: "🎭 La empresa que suplantaste tenía un sistema de verificación de identidad" },
-  { tipo: 'derrota', mensaje: "💸 El banco detectó movimientos sospechosos en la cuenta de la escuela ficticia" },
-  { tipo: 'derrota', mensaje: "📱 Tu plugin malicioso fue descubierto en una auditoría de seguridad" },
-  { tipo: 'derrota', mensaje: "🎨 Un experto en arte identificó tus falsificaciones como réplicas" },
-  { tipo: 'derrota', mensaje: "🔍 La biblioteca digital mejoró su seguridad y bloqueó tus accesos" },
-  { tipo: 'derrota', mensaje: "💊 Estudiantes reportaron efectos secundarios de tu suplemento falso" },
-  { tipo: 'derrota', mensaje: "📡 La transmisión interceptada tenía protección anti-piratería" },
-  { tipo: 'derrota', mensaje: "🎯 Un asistente reconoció el contenido plagiado de tu seminario" },
-  { tipo: 'derrota', mensaje: "💳 El sistema de laboratorio detectó las tarjetas clonadas" },
-  { tipo: 'derrota', mensaje: "📊 Las universidades verificaron tus estadísticas y encontraron inconsistencias" },
-  { tipo: 'derrota', mensaje: "🎓 Estudiantes denunciaron tu agencia ficticia cuando no recibieron sus visas" }
+  { tipo: 'derrota', mensaje: "📝 Manipulaste calificaciones pero el sistema tenía registro de cambios" }
 ]
