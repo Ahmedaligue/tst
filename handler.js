@@ -482,16 +482,16 @@ let verifyaleatorio = ['registrar', 'reg', 'verificar', 'verify', 'register'].ge
 
 // OBJETO MSG CORREGIDO - SIN ERROR DE SINTAXIS
 const msg = {
-    rowner: '> ⓘ \\`Este comando solo puede usarlo mi creador\\`',
-    owner: '> ⓘ \\`Este comando está reservado para mi creador\\`',
-    mods: '> ⓘ \\`Este comando solo lo pueden usar los moderadores\\`',
-    premium: '> ⓘ \\`Este comando es exclusivo para usuarios premium\\`',
-    group: '> ⓘ \\`Este comando solo se puede usar en grupos\\`',
-    private: '> ⓘ \\`Este comando solo funciona en mi chat privado\\`',
-    admin: '> ⓘ \\`Solo los administradores del grupo pueden usar esto\\`',
-    botAdmin: '> ⓘ \\`Necesito ser administradora para ejecutar este comando\\`',
-    unreg: '> ⓘ \\`No estás registrado aún\\`\\n> ⓘ \\`Regístrate primero con:\\` *reg nombre.edad*',
-    restrict: '> ⓘ \\`Esta característica está deshabilitada\\`'
+    rowner: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ ᥣ᥆ ⍴ᥙᥱძᥱ ᥙ𝗍іᥣіzᥲr ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`',
+    owner: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ⍴᥆r ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`',
+    mods: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ⍴᥆r ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`',
+    premium: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙ𝗍іᥣіzᥲr ⍴᥆r ᥙsᥙᥲrі᥆s ⍴rᥱmіᥙm, ᥡ ⍴ᥲrᥲ mі ᥴrᥱᥲძ᥆r.`',
+    group: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ᥱᥒ grᥙ⍴᥆s.`',
+    private: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ᥲᥣ ᥴһᥲ𝗍 ⍴rі᥎ᥲძ᥆ ძᥱᥣ ᑲ᥆𝗍.`',
+    admin: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ ᥱs ⍴ᥲrᥲ ᥲძmіᥒs ძᥱᥣ grᥙ⍴᥆.`',
+    botAdmin: '> `ⓘ ⍴ᥲrᥲ ⍴᥆ძᥱr ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ ᥱs ᥒᥱᥴᥱsᥲrі᥆ 𝗊ᥙᥱ ᥡ᥆ sᥱᥲ ᥲძmіᥒ.`',
+    unreg: '> `ⓘ ᥒᥱᥴᥱsі𝗍ᥲs ᥱs𝗍ᥲr rᥱgіs𝗍rᥲძ᥆(ᥲ) ⍴ᥲrᥲ ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆, ᥱsᥴrіᑲᥱ #rᥱg ⍴ᥲrᥲ rᥱgіs𝗍rᥲr𝗍ᥱ.`',
+    restrict: '> `ⓘ ᥴ᥆mᥲᥒძ᥆ rᥱs𝗍rіᥒgіძ᥆ ⍴᥆r ძᥱᥴіsі᥆ᥒ ძᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`'
 }[type];
 
 if (msg) return conn.reply(m.chat, msg, m).then(_ => m.react('✖️'))
