@@ -50,7 +50,252 @@ resolve()
 }, ms))
 
 // =============================================
-// SISTEMA DE BIENVENIDA/despedida INTEGRADO
+// SISTEMA ANTI-ÁRABE MEJORADO
+// =============================================
+
+// Configuración de países árabes
+const paisesArabes = {
+    'arabia': {
+        codigos: ['+966', '966'],
+        nombre: 'Arabia Saudita 🇸🇦',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'emiratos': {
+        codigos: ['+971', '971'],
+        nombre: 'Emiratos Árabes 🇦🇪',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'qatar': {
+        codigos: ['+974', '974'],
+        nombre: 'Qatar 🇶🇦',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'kuwait': {
+        codigos: ['+965', '965'],
+        nombre: 'Kuwait 🇰🇼',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'bahrein': {
+        codigos: ['+973', '973'],
+        nombre: 'Bahréin 🇧🇭',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'oman': {
+        codigos: ['+968', '968'],
+        nombre: 'Omán 🇴🇲',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'egipto': {
+        codigos: ['+20', '20'],
+        nombre: 'Egipto 🇪🇬',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'jordania': {
+        codigos: ['+962', '962'],
+        nombre: 'Jordania 🇯🇴',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'siria': {
+        codigos: ['+963', '963'],
+        nombre: 'Siria 🇸🇾',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'irak': {
+        codigos: ['+964', '964'],
+        nombre: 'Irak 🇮🇶',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'yemen': {
+        codigos: ['+967', '967'],
+        nombre: 'Yemen 🇾🇪',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'palestina': {
+        codigos: ['+970', '970'],
+        nombre: 'Palestina 🇵🇸',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'libano': {
+        codigos: ['+961', '961'],
+        nombre: 'Líbano 🇱🇧',
+        region: 'Medio Oriente',
+        bloqueoPredeterminado: true
+    },
+    'libia': {
+        codigos: ['+218', '218'],
+        nombre: 'Libia 🇱🇾',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'marruecos': {
+        codigos: ['+212', '212'],
+        nombre: 'Marruecos 🇲🇦',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'tunez': {
+        codigos: ['+216', '216'],
+        nombre: 'Túnez 🇹🇳',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'argelia': {
+        codigos: ['+213', '213'],
+        nombre: 'Argelia 🇩🇿',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'mauritania': {
+        codigos: ['+222', '222'],
+        nombre: 'Mauritania 🇲🇷',
+        region: 'África del Norte',
+        bloqueoPredeterminado: true
+    },
+    'yibuti': {
+        codigos: ['+253', '253'],
+        nombre: 'Yibuti 🇩🇯',
+        region: 'África',
+        bloqueoPredeterminado: true
+    },
+    'somalia': {
+        codigos: ['+252', '252'],
+        nombre: 'Somalia 🇸🇴',
+        region: 'África',
+        bloqueoPredeterminado: true
+    },
+    'sudan': {
+        codigos: ['+249', '249'],
+        nombre: 'Sudán 🇸🇩',
+        region: 'África',
+        bloqueoPredeterminado: true
+    }
+}
+
+// Función para detectar si un número es árabe
+function detectarNumeroArabe(numero) {
+    const numStr = numero.toString().replace(/\D/g, '')
+    
+    for (const [paisId, info] of Object.entries(paisesArabes)) {
+        for (const codigo of info.codigos) {
+            const codigoLimpio = codigo.replace('+', '')
+            if (numStr.startsWith(codigoLimpio)) {
+                return {
+                    esArabe: true,
+                    pais: paisId,
+                    nombre: info.nombre,
+                    region: info.region,
+                    codigo: codigo
+                }
+            }
+        }
+    }
+    
+    return { esArabe: false }
+}
+
+// Función para verificar si un usuario es admin (optimizada)
+async function isUserAdmin(conn, groupJid, userJid) {
+    try {
+        const metadata = await conn.groupMetadata(groupJid)
+        const participant = metadata.participants.find(p => p.id === userJid)
+        return participant && (participant.admin === 'admin' || participant.admin === 'superadmin')
+    } catch (error) {
+        return false
+    }
+}
+
+// Sistema Anti-Árabe en tiempo real
+async function verificarAntiArabe(conn, m) {
+    if (!m || !m.isGroup) return false
+    
+    try {
+        const chat = global.db.data.chats?.[m.chat]
+        if (!chat || !chat.antiArabe) return false
+        
+        const sender = m.sender
+        const userNumber = sender.split('@')[0]
+        
+        // Verificar si es administrador
+        const isAdmin = await isUserAdmin(conn, m.chat, sender)
+        if (isAdmin) return false // Los admins no son expulsados
+        
+        // Detectar si el número es árabe
+        const deteccion = detectarNumeroArabe(userNumber)
+        
+        if (deteccion.esArabe) {
+            // Verificar si el usuario ya está en el grupo
+            const groupMetadata = await conn.groupMetadata(m.chat).catch(() => null)
+            const userInGroup = groupMetadata?.participants?.some(p => p.id === sender)
+            
+            if (!userInGroup) return false
+            
+            // Expulsar al usuario
+            await conn.groupParticipantsUpdate(m.chat, [sender], 'remove')
+            
+            // Registrar la expulsión
+            if (!chat.antiArabeRegistros) chat.antiArabeRegistros = []
+            chat.antiArabeRegistros.push({
+                usuario: sender,
+                numero: userNumber,
+                pais: deteccion.nombre,
+                fecha: new Date().toISOString(),
+                motivo: 'anti-arabe'
+            })
+            
+            // Limitar el tamaño del historial
+            if (chat.antiArabeRegistros.length > 100) {
+                chat.antiArabeRegistros = chat.antiArabeRegistros.slice(-100)
+            }
+            
+            // Enviar mensaje de expulsión
+            const mensajeExpulsion = `╭─「 🚫 *ANTI-ÁRABE ACTIVADO* 🚫 」
+│ 
+│ ⚠️ *Usuario Árabe Expulsado*
+│ 
+│ 📋 *Información del Usuario:*
+│ ├ 🔢 Número: ${userNumber}
+│ ├ 🌍 País: ${deteccion.nombre}
+│ ├ 📍 Región: ${deteccion.region}
+│ ├ ⏰ Hora: ${new Date().toLocaleTimeString()}
+│ └ 🆔 ID: ${sender.split('@')[0]}
+│ 
+│ ⚙️ *Configuración del Grupo:*
+│ ├ 🛡️ Anti-Árabe: ✅ ACTIVADO
+│ ├ 👑 Admin: ${isAdmin ? '✅ Sí' : '❌ No'}
+│ └ 📊 Total expulsiones: ${chat.antiArabeRegistros.length}
+│ 
+│ ℹ️ *Para desactivar este sistema:*
+│ └ Use el comando: *.antiarabe off*
+╰─◉`
+            
+            await conn.sendMessage(m.chat, { 
+                text: mensajeExpulsion,
+                mentions: [sender]
+            })
+            
+            return true
+        }
+    } catch (error) {
+        console.error('Error en anti-árabe:', error)
+    }
+    
+    return false
+}
+
+// =============================================
+// SISTEMA DE BIENVENIDA/DESPEDIDA INTEGRADO
 // =============================================
 
 // Función para cargar imagen inteligentemente
@@ -96,7 +341,7 @@ function saveWelcomeState(state) {
 // Función para verificar si el welcome está activado
 export function isWelcomeEnabled(jid) {
   const state = loadWelcomeState()
-  return state[jid] !== false // Por defecto está activado
+  return state[jid] !== false
 }
 
 // Función para cambiar el estado del welcome
@@ -191,29 +436,23 @@ export async function makeCard({ title = 'Bienvenida', subtitle = '', avatarUrl 
   return canvas.toBuffer('image/png')
 }
 
-// Función principal para enviar bienvenidas/despedidas - CORREGIDA
+// Función principal para enviar bienvenidas/despedidas
 export async function sendWelcomeOrBye(conn, { jid, userName = 'Usuario', type = 'welcome', groupName = '', participant }) {
-  // VERIFICAR SI EL WELCOME ESTÁ ACTIVADO PARA ESTE GRUPO
   if (!isWelcomeEnabled(jid)) {
     return null
   }
 
-  // CORRECCIÓN: Crear directorio temp de manera segura
   let tmpDir = path.join(process.cwd(), 'temp')
-  
-  // Asegurarse de que el directorio temp existe
   if (!fs.existsSync(tmpDir)) {
     try {
       fs.mkdirSync(tmpDir, { recursive: true })
     } catch (mkdirError) {
-      // Intentar con directorio alternativo
       tmpDir = path.join(os.tmpdir(), 'whatsapp-bot-temp')
       try {
         if (!fs.existsSync(tmpDir)) {
           fs.mkdirSync(tmpDir, { recursive: true })
         }
       } catch (altError) {
-        // Usar directorio actual como última opción
         tmpDir = process.cwd()
       }
     }
@@ -228,7 +467,6 @@ export async function sendWelcomeOrBye(conn, { jid, userName = 'Usuario', type =
     return onlyDigits
   }
 
-  // Arrays de fondos y mensajes
   const BG_IMAGES = [
     'https://iili.io/KIShsKx.md.jpg',
     'https://iili.io/KIShLcQ.md.jpg',
@@ -368,7 +606,6 @@ export async function sendWelcomeOrBye(conn, { jid, userName = 'Usuario', type =
       contextInfo: { mentionedJid: mentionId } 
     })
 
-    // Limpiar archivo temporal después de enviar
     setTimeout(() => {
       try { fs.unlinkSync(file) } catch {}
     }, 60000)
@@ -384,31 +621,25 @@ export async function sendWelcomeOrBye(conn, { jid, userName = 'Usuario', type =
 // SISTEMA MULTI-PREFIJO SIMPLIFICADO
 // =============================================
 
-// LISTA DE PREFIJOS (SOLO LOS QUE SOLICITASTE)
 const globalPrefixes = [
   '.', ',', '!', '#', '$', '%', '&', '*',
   '-', '_', '+', '=', '|', '\\', '/', '~',
   '>', '<', '^', '?', ':', ';'
 ];
 
-// PREFIJO POR DEFECTO (REGEX MEJORADO)
 const defaultPrefixRegex = /^[.,!#$%&*+\-\-_=<>?/:;~\\|^]/;
 
-// FUNCIÓN MEJORADA PARA DETECTAR PREFIJOS
 const detectPrefix = (text, customPrefix = null) => {
   if (!text || typeof text !== 'string') return null;
 
   const str2Regex = str => str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 
-  // Si el plugin tiene prefijo personalizado
   if (customPrefix) {
-    // RegExp personalizado
     if (customPrefix instanceof RegExp) {
       const match = customPrefix.exec(text);
       return match ? { match, prefix: match[0], regex: customPrefix } : null;
     }
 
-    // Array de prefijos personalizados
     if (Array.isArray(customPrefix)) {
       for (const prefix of customPrefix) {
         if (prefix instanceof RegExp) {
@@ -423,7 +654,6 @@ const detectPrefix = (text, customPrefix = null) => {
       return null;
     }
 
-    // String personalizado
     if (typeof customPrefix === 'string') {
       const regex = new RegExp('^' + str2Regex(customPrefix));
       const match = regex.exec(text);
@@ -431,18 +661,15 @@ const detectPrefix = (text, customPrefix = null) => {
     }
   }
 
-  // Usar prefijos globales por defecto
   const match = defaultPrefixRegex.exec(text);
   return match ? { match, prefix: match[0], regex: defaultPrefixRegex } : null;
 };
 
-// FUNCIÓN SAFE REPLACE PARA EVITAR ERRORES
 const safeReplace = (str, pattern, replacement) => {
   if (typeof str !== 'string') return ''
   return str.replace(pattern, replacement)
 }
 
-// FUNCIÓN PARA NORMALIZAR NÚMEROS
 const normalizeNumber = (num) => {
   if (typeof num === 'number') return num.toString()
   if (typeof num !== 'string') return ''
@@ -508,12 +735,10 @@ export async function handler(chatUpdate) {
         if (!("afkReason" in user)) user.afkReason = ""
         if (!("warn" in user) || !isNumber(user.warn)) user.warn = 0
       } else global.db.data.users[m.sender] = {
-        // SISTEMA DE REGISTRO - INICIO
         registered: false,
         name: m.name,
         age: -1,
         regTime: -1,
-        // SISTEMA DE REGISTRO - FIN
         exp: 0,
         coin: 0,
         bank: 0,
@@ -546,6 +771,9 @@ export async function handler(chatUpdate) {
         if (!("primaryBot" in chat)) chat.primaryBot = null
         if (!("modoadmin" in chat)) chat.modoadmin = false
         if (!("antiLink" in chat)) chat.antiLink = true
+        // AÑADIR ANTI-ÁRABE AL CHAT
+        if (!("antiArabe" in chat)) chat.antiArabe = false
+        if (!("antiArabeRegistros" in chat)) chat.antiArabeRegistros = []
         if (!("nsfw" in chat)) chat.nsfw = false
         if (!("economy" in chat)) chat.economy = true;
         if (!("gacha" in chat)) chat.gacha = true
@@ -559,6 +787,8 @@ export async function handler(chatUpdate) {
         primaryBot: null,
         modoadmin: false,
         antiLink: true,
+        antiArabe: false,
+        antiArabeRegistros: [],
         nsfw: false,
         economy: true,
         gacha: true
@@ -591,7 +821,21 @@ export async function handler(chatUpdate) {
     const chat = global.db.data.chats[m.chat]
     const settings = global.db.data.settings[this.user.jid]  
 
-    // LÍNEA CORREGIDA - USANDO safeReplace
+    // =============================================
+    // SISTEMA ANTI-ÁRABE EN TIEMPO REAL
+    // =============================================
+    if (m.message && m.key.remoteJid.endsWith('@g.us') && m.text && chat?.antiArabe) {
+      try {
+        // Verificar anti-árabe antes de procesar comandos
+        const fueExpulsado = await verificarAntiArabe(this, m)
+        if (fueExpulsado) {
+          return // Detener el procesamiento si fue expulsado
+        }
+      } catch (error) {
+        console.error('Error en sistema anti-árabe:', error)
+      }
+    }
+
     const isROwner = [...global.owner.map((number) => number)].map(v => {
       const numStr = typeof v === 'string' ? v : String(v || '')
       return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
@@ -599,13 +843,11 @@ export async function handler(chatUpdate) {
 
     const isOwner = isROwner || m.fromMe
 
-    // CORREGIDO - USANDO safeReplace PARA PREMIUM
     const isPrems = isROwner || global.prems.map(v => {
       const numStr = typeof v === 'string' ? v : String(v || '')
       return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
     }).includes(m.sender) || user.premium == true
 
-    // CORREGIDO - USANDO safeReplace PARA OWNERS
     const isOwners = [this.user.jid, ...global.owner.map((number) => {
       const numStr = typeof number === 'string' ? number : String(number || '')
       return safeReplace(numStr, /[^0-9]/g, "") + "@s.whatsapp.net"
@@ -625,10 +867,6 @@ export async function handler(chatUpdate) {
     m.exp += Math.ceil(Math.random() * 10)
     let usedPrefix
 
-    // =============================================
-    // CORRECCIÓN CRÍTICA: USO DE DIRECTORIOS
-    // =============================================
-    // Reemplaza la línea problemática 54
     const ___dirname = path.join(CURRENT_DIR, "./plugins")
 
     const groupMetadata = m.isGroup ? { 
@@ -661,7 +899,6 @@ export async function handler(chatUpdate) {
       if (!plugin) continue
       if (plugin.disabled) continue
 
-      // CORRECCIÓN: Usar CURRENT_DIR en lugar de ___dirname complejo
       const __filename = join(___dirname, name)
 
       if (typeof plugin.all === "function") {
@@ -684,9 +921,6 @@ export async function handler(chatUpdate) {
           continue
         }
 
-      // =============================================
-      // SISTEMA MULTI-PREFIJO IMPLEMENTADO
-      // =============================================
       const pluginPrefix = plugin.customPrefix || globalPrefixes
       const prefixMatch = detectPrefix(m.text, pluginPrefix)
 
@@ -765,7 +999,7 @@ export async function handler(chatUpdate) {
 
           if (name !== "group-banchat.js" && chat?.isBanned && !isROwner) {
             if (!primaryBotId || primaryBotId === botId) {
-              const aviso = `El bot *${botname}* está desactivado en este grupo\n\n> ✦ Un *administrador* puede activarlo con el comando:\n> » *${usedPrefix}bot on*`.trim()
+              const aviso = `El bot *${global.botname}* está desactivado en este grupo\n\n> ✦ Un *administrador* puede activarlo con el comando:\n> » *${usedPrefix}bot on*`.trim()
               await m.reply(aviso)
               return
             }
@@ -807,12 +1041,10 @@ export async function handler(chatUpdate) {
           continue
         }
 
-        // SISTEMA DE REGISTRO - VALIDACIÓN
         if (plugin.register == true && user.registered == false) {
           fail("unreg", m, this)
           continue
         }
-        // SISTEMA DE REGISTRO - FIN
 
         if (plugin.group && !m.isGroup) {
           fail("group", m, this)
@@ -902,15 +1134,134 @@ export async function handler(chatUpdate) {
 }
 
 // =============================================
+// SISTEMA DE BIENVENIDA/DESPEDIDA AUTOMÁTICO
+// =============================================
+
+let welcomeProcessing = new Set();
+
+global.conn.ev.on('group-participants.update', async (update) => {
+  try {
+    const { id, participants, action } = update;
+    const chat = global.db.data.chats?.[id];
+
+    // Verificar si welcome está activado en la BD
+    if (!chat || !chat.welcome) return;
+
+    // Crear clave única para este evento
+    const eventKey = `${id}_${action}_${participants.join('_')}`;
+
+    // Evitar duplicados
+    if (welcomeProcessing.has(eventKey)) {
+      return;
+    }
+
+    welcomeProcessing.add(eventKey);
+    setTimeout(() => {
+      welcomeProcessing.delete(eventKey);
+    }, 10000);
+
+    // Procesar cada participante
+    for (const participant of participants) {
+      try {
+        const userKey = `${id}_${action}_${participant}`;
+        const cacheKey = `welcome_${userKey}`;
+
+        if (!global.welcomeCache) {
+          global.welcomeCache = new Set();
+        }
+        
+        if (global.welcomeCache.has(cacheKey)) {
+          continue;
+        }
+        
+        global.welcomeCache.add(cacheKey);
+        setTimeout(() => {
+          if (global.welcomeCache) {
+            global.welcomeCache.delete(cacheKey);
+          }
+        }, 30000);
+
+        // =============================================
+        // INTEGRAR ANTI-ÁRABE EN WELCOME
+        // =============================================
+        if (action === 'add' && chat.antiArabe) {
+          const userNumber = participant.split('@')[0];
+          const deteccion = detectarNumeroArabe(userNumber);
+          
+          if (deteccion.esArabe) {
+            console.log(`🚫 Anti-árabe expulsando: ${userNumber} (${deteccion.nombre})`);
+            
+            // Verificar si es admin antes de expulsar
+            const isAdmin = await isUserAdmin(global.conn, id, participant);
+            if (!isAdmin) {
+              await global.conn.groupParticipantsUpdate(id, [participant], 'remove');
+              
+              // Registrar expulsión
+              if (!chat.antiArabeRegistros) chat.antiArabeRegistros = [];
+              chat.antiArabeRegistros.push({
+                usuario: participant,
+                numero: userNumber,
+                pais: deteccion.nombre,
+                fecha: new Date().toISOString(),
+                motivo: 'anti-arabe-welcome'
+              });
+              
+              await global.conn.sendMessage(id, {
+                text: `╭─「 🚫 *ANTI-ÁRABE ACTIVADO* 🚫 」
+│ 
+│ ⚠️ *Usuario Árabe Expulsado al Entrar*
+│ 
+│ 📋 *Información:*
+│ ├ 🔢 Número: ${userNumber}
+│ ├ 🌍 País: ${deteccion.nombre}
+│ ├ 📍 Región: ${deteccion.region}
+│ ├ ⏰ Hora: ${new Date().toLocaleTimeString()}
+│ └ 🚫 Acción: Expulsado automáticamente
+│ 
+│ ⚙️ *Sistema activo:*
+│ ├ Anti-Árabe: ✅ ACTIVADO
+│ └ Bloqueo: Entrada + Mensajes
+╰─◉`.trim()
+              });
+              continue; // No enviar welcome si fue expulsado
+            }
+          }
+        }
+
+        // Si pasó el anti-árabe, enviar welcome normal
+        if (action === 'add') {
+          await sendWelcomeOrBye(global.conn, {
+            jid: id,
+            participant,
+            type: 'welcome'
+          });
+        } else if (action === 'remove') {
+          await sendWelcomeOrBye(global.conn, {
+            jid: id,
+            participant,
+            type: 'bye'
+          });
+        }
+
+      } catch (error) {
+        console.error(`Error procesando ${action} para ${participant}:`, error);
+      }
+    }
+
+  } catch (error) {
+    console.error('❌ Error en sistema welcome:', error);
+  }
+});
+
+// =============================================
 // FUNCIÓN DFALL MEJORADA
 // =============================================
 
 global.dfail = (type, m, conn) => {
-  let edadaleatoria = ['10', '28', '20', '40', '18', '21', '15', '11', '9', '17', '25'].getRandom()
+  let edadaleatoria = ['10', '28', '20', '40', '18', '21', '15', '11', '9', '17', '25'][Math.floor(Math.random() * 11)]
   let user2 = m.pushName || 'Anónimo'
-  let verifyaleatorio = ['registrar', 'reg', 'verificar', 'verify', 'register'].getRandom()
+  let verifyaleatorio = ['registrar', 'reg', 'verificar', 'verify', 'register'][Math.floor(Math.random() * 5)]
 
-  // OBJETO MSG CORREGIDO - SIN ERROR DE SINTAXIS
   const msg = {
     rowner: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ ᥣ᥆ ⍴ᥙᥱძᥱ ᥙ𝗍іᥣіzᥲr ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`',
     owner: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ⍴᥆r ᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`',
@@ -920,7 +1271,7 @@ global.dfail = (type, m, conn) => {
     private: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ sᥱ ⍴ᥙᥱძᥱ ᥙsᥲr ᥲᥴ һᥲ𝗍 ⍴rі᥎ᥲძ᥆ ძᥱᥣ ᑲ᥆𝗍.`',
     admin: '> `ⓘ ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ s᥆ᥣ᥆ ᥱs ⍴ᥲrᥲ ᥲძmіᥒs ძᥱᥣ grᥙ⍴᥆.`',
     botAdmin: '> `ⓘ ⍴ᥲrᥲ ⍴᥆ძᥱr ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆ ᥱs ᥒᥱᥴᥱsᥲrі᥆ 𝗊ᥙᥱ ᥡ᥆ sᥱᥲ ᥲძmіᥒ.`',
-    unreg: '> `ⓘ ᥒᥱᥴᥱsі𝗍ᥲs ᥱs𝗍ᥲr rᥱgіs𝗍rᥲძ᥆(ᥲ) ⍴ᥲrᥲ ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆, ᥱsᥴrіᑲᥱ #rᥱg ⍴ᥲrᥲ rᥱgіs𝗍rᥲr𝗍ᥱ.`',
+    unreg: `> \`ⓘ ᥒᥱᥴᥱsі𝗍ᥲs ᥱs𝗍ᥲr rᥱgіs𝗍rᥲძ᥆(ᥲ) ⍴ᥲrᥲ ᥙsᥲr ᥱs𝗍ᥱ ᥴ᥆mᥲᥒძ᥆, ᥱsᥴrіᑲᥱ #rᥱg ⍴ᥲrᥲ rᥱgіs𝗍rᥲr𝗍ᥱ.\``,
     restrict: '> `ⓘ ᥴ᥆mᥲᥒძ᥆ rᥱs𝗍rіᥒgіძ᥆ ⍴᥆r ძᥱᥴіsі᥆ᥒ ძᥱᥣ ⍴r᥆⍴іᥱ𝗍ᥲrі᥆ ძᥱᥣ ᑲ᥆𝗍.`'
   }[type];
 
@@ -931,26 +1282,25 @@ global.dfail = (type, m, conn) => {
 // HACER FUNCIONES GLOBALES PARA PLUGINS
 // =============================================
 
-// Hacer funciones de bienvenida disponibles globalmente
 global.sendWelcomeOrBye = sendWelcomeOrBye
 global.isWelcomeEnabled = isWelcomeEnabled
 global.setWelcomeState = setWelcomeState
 global.makeCard = makeCard
+global.detectarNumeroArabe = detectarNumeroArabe
+global.verificarAntiArabe = verificarAntiArabe
+global.isUserAdmin = isUserAdmin
+global.paisesArabes = paisesArabes
 
-
-console.log('✅ Funciones de bienvenida disponibles globalmente:')
-console.log('- sendWelcomeOrBye:', typeof sendWelcomeOrBye)
-console.log('- isWelcomeEnabled:', typeof isWelcomeEnabled)
-console.log('- setWelcomeState:', typeof setWelcomeState)
-
-// USO FINAL DE GLOBAL.__FILENAME PARA WATCHFILE - CORREGIDO
+// =============================================
+// WATCHFILE CORREGIDO
+// =============================================
 let file = global.__filename(import.meta.url, true)
 if (typeof file === 'function') {
   file = CURRENT_DIR;
 }
 watchFile(file, async () => {
   unwatchFile(file)
-  console.log(chalk.magenta("Se actualizo 'handler.js'"))
+  console.log(chalk.magenta("Se actualizó 'handler.js'"))
   if (global.reloadHandler) console.log(await global.reloadHandler())
 })
 
@@ -965,5 +1315,8 @@ export default {
   isWelcomeEnabled, 
   setWelcomeState,
   loadWelcomeState,
-  saveWelcomeState
+  saveWelcomeState,
+  detectarNumeroArabe,
+  verificarAntiArabe,
+  isUserAdmin
 }
