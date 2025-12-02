@@ -7,7 +7,6 @@ import chalk from "chalk"
 import fetch from "node-fetch"
 import ws from "ws"
 import { createCanvas, loadImage } from '@napi-rs/canvas'
-import { jidNormalizedUser } from '@whiskeysockets/baileys'
 import os from 'os'
 
 if (typeof global.__filename !== 'function') {
@@ -43,153 +42,116 @@ clearTimeout(this)
 resolve()
 }, ms))
 
-const paisesArabes = {
+const paisesArabesCompletos = {
     'arabia': {
-        codigos: ['+966', '966'],
-        nombre: 'Arabia Saudita 🇸🇦',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['966', '00966', '5966', '9665', '9660', '9661', '9662', '9663', '9664', '9665', '9666', '9667', '9668', '9669'],
+        nombre: 'Arabia Saudita 🇸🇦'
     },
     'emiratos': {
-        codigos: ['+971', '971'],
-        nombre: 'Emiratos Árabes 🇦🇪',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['971', '00971', '5971', '9715', '9710', '9711', '9712', '9713', '9714', '9715', '9716', '9717', '9718', '9719'],
+        nombre: 'Emiratos Árabes 🇦🇪'
     },
     'qatar': {
-        codigos: ['+974', '974'],
-        nombre: 'Qatar 🇶🇦',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['974', '00974', '5974', '9745', '9740', '9741', '9742', '9743', '9744', '9745', '9746', '9747', '9748', '9749'],
+        nombre: 'Qatar 🇶🇦'
     },
     'kuwait': {
-        codigos: ['+965', '965'],
-        nombre: 'Kuwait 🇰🇼',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['965', '00965', '5965', '9655', '9650', '9651', '9652', '9653', '9654', '9655', '9656', '9657', '9658', '9659'],
+        nombre: 'Kuwait 🇰🇼'
     },
     'bahrein': {
-        codigos: ['+973', '973'],
-        nombre: 'Bahréin 🇧🇭',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['973', '00973', '5973', '9735', '9730', '9731', '9732', '9733', '9734', '9735', '9736', '9737', '9738', '9739'],
+        nombre: 'Bahréin 🇧🇭'
     },
     'oman': {
-        codigos: ['+968', '968'],
-        nombre: 'Omán 🇴🇲',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['968', '00968', '5968', '9685', '9680', '9681', '9682', '9683', '9684', '9685', '9686', '9687', '9688', '9689'],
+        nombre: 'Omán 🇴🇲'
     },
     'egipto': {
-        codigos: ['+20', '20'],
-        nombre: 'Egipto 🇪🇬',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['20', '020', '200', '201', '202', '203', '204', '205', '206', '207', '208', '209', '2010', '2011', '2012'],
+        nombre: 'Egipto 🇪🇬'
     },
     'jordania': {
-        codigos: ['+962', '962'],
-        nombre: 'Jordania 🇯🇴',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['962', '00962', '5962', '9625', '9620', '9621', '9622', '9623', '9624', '9625', '9626', '9627', '9628', '9629'],
+        nombre: 'Jordania 🇯🇴'
     },
     'siria': {
-        codigos: ['+963', '963'],
-        nombre: 'Siria 🇸🇾',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['963', '00963', '5963', '9635', '9630', '9631', '9632', '9633', '9634', '9635', '9636', '9637', '9638', '9639'],
+        nombre: 'Siria 🇸🇾'
     },
     'irak': {
-        codigos: ['+964', '964'],
-        nombre: 'Irak 🇮🇶',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['964', '00964', '5964', '9645', '9640', '9641', '9642', '9643', '9644', '9645', '9646', '9647', '9648', '9649'],
+        nombre: 'Irak 🇮🇶'
     },
     'yemen': {
-        codigos: ['+967', '967'],
-        nombre: 'Yemen 🇾🇪',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['967', '00967', '5967', '9675', '9670', '9671', '9672', '9673', '9674', '9675', '9676', '9677', '9678', '9679'],
+        nombre: 'Yemen 🇾🇪'
     },
     'palestina': {
-        codigos: ['+970', '970'],
-        nombre: 'Palestina 🇵🇸',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['970', '00970', '5970', '9705', '9700', '9701', '9702', '9703', '9704', '9705', '9706', '9707', '9708', '9709'],
+        nombre: 'Palestina 🇵🇸'
     },
     'libano': {
-        codigos: ['+961', '961'],
-        nombre: 'Líbano 🇱🇧',
-        region: 'Medio Oriente',
-        bloqueoPredeterminado: true
+        codigos: ['961', '00961', '5961', '9615', '9610', '9611', '9612', '9613', '9614', '9615', '9616', '9617', '9618', '9619'],
+        nombre: 'Líbano 🇱🇧'
     },
     'libia': {
-        codigos: ['+218', '218'],
-        nombre: 'Libia 🇱🇾',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['218', '00218', '0218', '2180', '2181', '2182', '2183', '2184', '2185', '2186', '2187', '2188', '2189'],
+        nombre: 'Libia 🇱🇾'
     },
     'marruecos': {
-        codigos: ['+212', '212'],
-        nombre: 'Marruecos 🇲🇦',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['212', '00212', '0212', '2120', '2121', '2122', '2123', '2124', '2125', '2126', '2127', '2128', '2129'],
+        nombre: 'Marruecos 🇲🇦'
     },
     'tunez': {
-        codigos: ['+216', '216'],
-        nombre: 'Túnez 🇹🇳',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['216', '00216', '0216', '2160', '2161', '2162', '2163', '2164', '2165', '2166', '2167', '2168', '2169'],
+        nombre: 'Túnez 🇹🇳'
     },
     'argelia': {
-        codigos: ['+213', '213'],
-        nombre: 'Argelia 🇩🇿',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['213', '00213', '0213', '2130', '2131', '2132', '2133', '2134', '2135', '2136', '2137', '2138', '2139'],
+        nombre: 'Argelia 🇩🇿'
     },
     'mauritania': {
-        codigos: ['+222', '222'],
-        nombre: 'Mauritania 🇲🇷',
-        region: 'África del Norte',
-        bloqueoPredeterminado: true
+        codigos: ['222', '00222', '0222', '2220', '2221', '2222', '2223', '2224', '2225', '2226', '2227', '2228', '2229'],
+        nombre: 'Mauritania 🇲🇷'
     },
     'yibuti': {
-        codigos: ['+253', '253'],
-        nombre: 'Yibuti 🇩🇯',
-        region: 'África',
-        bloqueoPredeterminado: true
+        codigos: ['253', '00253', '0253', '2530', '2531', '2532', '2533', '2534', '2535', '2536', '2537', '2538', '2539'],
+        nombre: 'Yibuti 🇩🇯'
     },
     'somalia': {
-        codigos: ['+252', '252'],
-        nombre: 'Somalia 🇸🇴',
-        region: 'África',
-        bloqueoPredeterminado: true
+        codigos: ['252', '00252', '0252', '2520', '2521', '2522', '2523', '2524', '2525', '2526', '2527', '2528', '2529'],
+        nombre: 'Somalia 🇸🇴'
     },
     'sudan': {
-        codigos: ['+249', '249'],
-        nombre: 'Sudán 🇸🇩',
-        region: 'África',
-        bloqueoPredeterminado: true
+        codigos: ['249', '00249', '0249', '2490', '2491', '2492', '2493', '2494', '2495', '2496', '2497', '2498', '2499'],
+        nombre: 'Sudán 🇸🇩'
     }
 }
 
 function detectarNumeroArabe(numero) {
+    if (!numero || typeof numero !== 'string') return { esArabe: false }
+    
     const numStr = numero.toString().replace(/\D/g, '')
-
-    for (const [paisId, info] of Object.entries(paisesArabes)) {
+    
+    if (numStr.length < 3) return { esArabe: false }
+    
+    for (const [paisId, info] of Object.entries(paisesArabesCompletos)) {
         for (const codigo of info.codigos) {
-            const codigoLimpio = codigo.replace('+', '')
+            const codigoLimpio = codigo.replace('+', '').replace('00', '')
+            
             if (numStr.startsWith(codigoLimpio)) {
                 return {
                     esArabe: true,
                     pais: paisId,
                     nombre: info.nombre,
-                    region: info.region,
-                    codigo: codigo
+                    codigo: codigo,
+                    numeroCompleto: numStr
                 }
             }
         }
     }
-
+    
     return { esArabe: false }
 }
 
@@ -219,12 +181,15 @@ async function verificarAntiArabe(conn, m) {
         const deteccion = detectarNumeroArabe(userNumber)
 
         if (deteccion.esArabe) {
-            const groupMetadata = await conn.groupMetadata(m.chat).catch(() => null)
-            const userInGroup = groupMetadata?.participants?.some(p => p.id === sender)
+            console.log(`🚫 ANTI-ÁRABE: Detectado número ${userNumber} - País: ${deteccion.nombre}`)
 
-            if (!userInGroup) return false
-
-            await conn.groupParticipantsUpdate(m.chat, [sender], 'remove')
+            try {
+                await conn.groupParticipantsUpdate(m.chat, [sender], 'remove')
+                console.log(`✅ Usuario ${userNumber} expulsado por ser árabe`)
+            } catch (expError) {
+                console.error(`❌ Error al expulsar usuario ${userNumber}:`, expError)
+                return false
+            }
 
             if (!chat.antiArabeRegistros) chat.antiArabeRegistros = []
             chat.antiArabeRegistros.push({
@@ -232,7 +197,7 @@ async function verificarAntiArabe(conn, m) {
                 numero: userNumber,
                 pais: deteccion.nombre,
                 fecha: new Date().toISOString(),
-                motivo: 'anti-arabe'
+                motivo: 'numero-arabe'
             })
 
             if (chat.antiArabeRegistros.length > 100) {
@@ -241,27 +206,30 @@ async function verificarAntiArabe(conn, m) {
 
             const mensajeExpulsion = `╭─「 🚫 *ANTI-ÁRABE ACTIVADO* 🚫 」
 │ 
-│ ⚠️ *Usuario Árabe Expulsado*
+│ ⚠️ *USUARIO ÁRABE EXPULSADO*
 │ 
-│ 📋 *Información del Usuario:*
+│ 📋 *INFORMACIÓN:*
 │ ├ 🔢 Número: ${userNumber}
 │ ├ 🌍 País: ${deteccion.nombre}
-│ ├ 📍 Región: ${deteccion.region}
+│ ├ ⚡ Acción: Expulsado automáticamente
 │ └ 🆔 ID: ${sender.split('@')[0]}
 │ 
-│ ⚙️ *Configuración del Grupo:*
+│ ⚙️ *CONFIGURACIÓN:*
 │ ├ 🛡️ Anti-Árabe: ✅ ACTIVADO
 │ ├ 👑 Admin: ${isAdmin ? '✅ Sí' : '❌ No'}
-│ └ 📊 Total expulsiones: ${chat.antiArabeRegistros.length}
+│ └ 📊 Expulsiones: ${chat.antiArabeRegistros.length}
 │ 
-│ ℹ️ *Para desactivar este sistema:*
-│ └ Use el comando: *.antiarabe off*
+│ ℹ️ *Los números árabes están prohibidos*
 ╰─◉`
 
-            await conn.sendMessage(m.chat, { 
-                text: mensajeExpulsion,
-                mentions: [sender]
-            })
+            try {
+                await conn.sendMessage(m.chat, { 
+                    text: mensajeExpulsion,
+                    mentions: [sender]
+                })
+            } catch (msgError) {
+                console.error('Error enviando mensaje de expulsión:', msgError)
+            }
 
             return true
         }
@@ -500,7 +468,6 @@ export async function sendWelcomeOrBye(conn, { jid, userName = 'Usuario', type =
     const who = participant || ''
     let realJid = who
     try { if (typeof conn?.decodeJid === 'function') realJid = conn.decodeJid(realJid) } catch {}
-    try { realJid = jidNormalizedUser(realJid) } catch {}
     const number = normalizeNumberFromJid(realJid)
     const taguser = number ? `@${number}` : (userName || 'Usuario')
 
@@ -778,8 +745,9 @@ export async function handler(chatUpdate) {
     const chat = global.db.data.chats[m.chat]
     const settings = global.db.data.settings[this.user.jid]  
 
-    if (m.message && m.key.remoteJid.endsWith('@g.us') && m.text && chat?.antiArabe) {
+    if (m.message && m.key.remoteJid.endsWith('@g.us') && chat?.antiArabe) {
       try {
+        console.log(`🔍 Verificando anti-árabe para usuario: ${m.sender}`)
         const fueExpulsado = await verificarAntiArabe(this, m)
         if (fueExpulsado) {
           return
@@ -1095,11 +1063,11 @@ function initWelcomeSystem() {
     console.error('❌ global.conn no está definido. No se puede inicializar sistema welcome.');
     return;
   }
-  
+
   if (welcomeEventListener) {
     global.conn.ev.off('group-participants.update', welcomeEventListener);
   }
-  
+
   welcomeEventListener = async (update) => {
     try {
       const { id, participants, action } = update;
@@ -1143,7 +1111,7 @@ function initWelcomeSystem() {
             const deteccion = detectarNumeroArabe(userNumber);
 
             if (deteccion.esArabe) {
-              console.log(`🚫 Anti-árabe expulsando: ${userNumber} (${deteccion.nombre})`);
+              console.log(`🚫 Anti-árabe en welcome: ${userNumber} (${deteccion.nombre})`);
 
               const isAdmin = await isUserAdmin(global.conn, id, participant);
               if (!isAdmin) {
@@ -1166,7 +1134,6 @@ function initWelcomeSystem() {
 │ 📋 *Información:*
 │ ├ 🔢 Número: ${userNumber}
 │ ├ 🌍 País: ${deteccion.nombre}
-│ ├ 📍 Región: ${deteccion.region}
 │ └ 🍃 Acción: Expulsado automáticamente
 │ 
 │ ⚙️ *Sistema activo:*
@@ -1202,7 +1169,7 @@ function initWelcomeSystem() {
       console.error('❌ Error en sistema welcome:', error);
     }
   };
-  
+
   global.conn.ev.on('group-participants.update', welcomeEventListener);
   console.log('✅ Sistema welcome inicializado correctamente');
 }
@@ -1239,7 +1206,7 @@ global.makeCard = makeCard
 global.detectarNumeroArabe = detectarNumeroArabe
 global.verificarAntiArabe = verificarAntiArabe
 global.isUserAdmin = isUserAdmin
-global.paisesArabes = paisesArabes
+global.paisesArabesCompletos = paisesArabesCompletos
 global.initWelcomeSystem = initWelcomeSystem
 
 let file = global.__filename(import.meta.url, true)
