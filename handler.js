@@ -937,7 +937,11 @@ global.isWelcomeEnabled = isWelcomeEnabled
 global.setWelcomeState = setWelcomeState
 global.makeCard = makeCard
 
-console.log('✅ Funciones de bienvenida disponibles globalmente')
+
+console.log('✅ Funciones de bienvenida disponibles globalmente:')
+console.log('- sendWelcomeOrBye:', typeof sendWelcomeOrBye)
+console.log('- isWelcomeEnabled:', typeof isWelcomeEnabled)
+console.log('- setWelcomeState:', typeof setWelcomeState)
 
 // USO FINAL DE GLOBAL.__FILENAME PARA WATCHFILE - CORREGIDO
 let file = global.__filename(import.meta.url, true)
