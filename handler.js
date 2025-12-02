@@ -268,7 +268,6 @@ async function verificarAntiArabe(conn, m) {
 │ ├ 🔢 Número: ${userNumber}
 │ ├ 🌍 País: ${deteccion.nombre}
 │ ├ 📍 Región: ${deteccion.region}
-│ ├ ⏰ Hora: ${new Date().toLocaleTimeString()}
 │ └ 🆔 ID: ${sender.split('@')[0]}
 │ 
 │ ⚙️ *Configuración del Grupo:*
