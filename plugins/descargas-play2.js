@@ -2,7 +2,7 @@ import yts from 'yt-search'
 import fetch from 'node-fetch'    
 
 async function apiAdonix(url) {    
-  const apiURL = `https://api-adonix.ultraplus.click/download/ytmp4?apikey=${global.apikey}&url=${encodeURIComponent(url)}`    
+  const apiURL = `https://api-adonix.ultraplus.click/download/ytvideo?apikey=${global.apikey}&url=${encodeURIComponent(url)}`    
   const res = await fetch(apiURL)    
   const data = await res.json()    
 
