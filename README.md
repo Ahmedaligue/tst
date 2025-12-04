@@ -85,7 +85,7 @@ termux-setup-storage
 apt update && apt upgrade && pkg install -y git nodejs ffmpeg imagemagick yarn
 ```
 ```bash
-git clone https://github.com/leoxito/Itsuki-NakanoV3 && cd Itsuki-NakanoV2
+git clone https://github.com/leoxito/Itsuki-NakanoV3 && cd Itsuki-NakanoV3
 ```
 ```bash
 npm install
