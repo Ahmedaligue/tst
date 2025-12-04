@@ -139,6 +139,6 @@ href="https://dash.quintillisas.com"><img src="https://cdn.russellxz.click/2cd46
 
 
 
-### **`ʟᴇᴏ ᴘʀᴏᴘɪᴇᴛᴀʀɪᴏ ᴅᴇʟ ᴘʀᴏʏᴇᴄᴛᴏ`**
+### **`Autor del bot`**
 <a
 href="https://github.com/leoxito"><img src="https://github.com/leoxito.png" width="130" height="130" alt="leoxito"/></a>
