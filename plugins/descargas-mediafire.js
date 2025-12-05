@@ -86,6 +86,6 @@ ${usedPrefix + command} https://www.mediafire.com/file/pwxob70rpgma9lz/ejemplo.a
 
 handler.help = ['mediafire <link>']
 handler.tags = ['downloader']
-handler.command = /^(mediafire|
+handler.command = handler.help = ['detectar']
 
 export default handler
