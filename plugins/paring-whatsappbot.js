@@ -84,7 +84,7 @@ users.forEach((v, index) => {
     const uptime = v.uptime ? dhms(Date.now() - v.uptime) : "0s"
 
     botList += `🌷 *Itsuki-V3 Sub*  *[ ${index + 1} ]*\n\n`
-    botList += `🌱 *Tag :* @${jid}\n`
+    botList += `🌱 *Tag :* +${jid}\n`
     botList += `🆔️ *ID :* wa.me/${jid}?text=.menu\n`
     botList += `🤖 *Bot :* Itsuki-V3 Sub\n`
     botList += `🕑 *Uptime :* ${uptime}\n`
@@ -97,8 +97,6 @@ const sesionesGuardadas = await info(jadi)
 let cap = `# 📚 *Subbots activos : ${totalUsers}/100*\n\n`
 cap += `💾 *Sesiones guardadas:* ${sesionesGuardadas}\n`
 cap += `🟢 *Sesiones activas:* ${totalUsers}\n\n`
-
-// Si hay más del límite, mostrar advertencia
 if (totalUsers > limit) {
     cap += `> *[🧃] El número de subbots activos supera el límite de ${limit} por lo que no se mostrará la lista con los tags.*\n\n`
     // Aún así mostrar algunos (los primeros 5)
@@ -109,7 +107,7 @@ if (totalUsers > limit) {
         const uptime = v.uptime ? dhms(Date.now() - v.uptime) : "0s"
 
         cap += `🌷 *Itsuki-V3 Sub*  *[ ${index + 1} ]*\n`
-        cap += `🌱 Tag : @${jid}\n`
+        cap += `🌱 Tag : +${jid}\n`
         cap += `🆔️ ID : wa.me/${jid}?text=.menu\n`
         cap += `🤖 Bot : Itsuki-V3 Sub\n`
         cap += `🕑 Uptime : ${uptime}\n`
