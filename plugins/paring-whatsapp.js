@@ -246,7 +246,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 > 🍒 ࣪𓂃 *¡Consejito dale rapidito!* ˚₊‧꒰ა ♡ ໒꒱ ‧₊˚`
               }),
               footer: proto.Message.InteractiveMessage.Footer.fromObject({
-                text: "ᴄᴏᴘɪᴀ ᴇʟ ᴄᴏᴅɪɢᴏ ᴀǳɪ ᴀʙᴀᴊᴏ 🌺"
+                text: "ᴄᴏᴘɪᴀ ᴇʟ ᴄᴏᴅɪɢᴏ ᴀǫᴜɪ ᴀʙᴀᴊᴏ 🌺"
               }),
               nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
                 buttons: [
