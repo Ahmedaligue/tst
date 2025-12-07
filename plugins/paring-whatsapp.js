@@ -14,7 +14,7 @@ try {
   // Si tu archivo de handler principal es realmente 'handler.js', la importación DEBERÍA SER:
   // ({ handler: mainHandler } = await import('./handler.js')) 
   // Mantendré la ruta que especificaste: './paring-verify.js'
-  ({ handler: mainHandler } = await import('./paring-verify.js')) 
+  ({ handler: mainHandler } = await import('./handler.js')) 
 } catch (e) {
   console.error('[SUBBOT] Error importando handler principal:', e.message || e)
 }
