@@ -1,4 +1,6 @@
 import ws from 'ws';
+import fetch from 'node-fetch'; // <-- LÍNEA AÑADIDA
+
 let handler = async(m, { usedPrefix, conn, text }) => {
 const limit = 20
 const users = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])];
