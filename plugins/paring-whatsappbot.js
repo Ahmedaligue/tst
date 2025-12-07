@@ -1,8 +1,6 @@
 import ws from 'ws';
 let handler = async(m, { usedPrefix, conn, text }) => {
 const limit = 20
-// --- CAMBIO CLAVE ---
-// Leemos desde global.conns
 const users = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])];
 
 function dhms(ms) {
