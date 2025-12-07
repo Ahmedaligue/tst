@@ -137,7 +137,18 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
             const interactiveMessage = proto.Message.InteractiveMessage.fromObject({
               header,
               body: proto.Message.InteractiveMessage.Body.fromObject({
-                text: `🔐 *CÓDIGO DE VINCULACIÓN*\n\n📱 *Instrucciones:*\n1. Abre WhatsApp en tu teléfono\n2. Ve a Ajustes → Dispositivos vinculados\n3. Toca Vincular un dispositivo\n4. Usa este código:\n\n🔢 *Código:* ${rawCode.match(/.{1,4}/g)?.join("-")}\n\n⚠️ *El código expira en 45 segundos*`
+                text: `> *❀ OPCIÓN-CODIGO ❀*
+
+𓂃 ࣪ ִֶָ☾.  
+> 1. 📲 *WhatsApp → Ajustes*  
+> 2. ⛓️‍💥 *Dispositivos vinculados*  
+> 3. 🔐 *Toca vincular*  
+> 4. ✨ Copia este código:
+
+> ˗ˏˋ ꕤ  ${rawCode.match(/.{1,4}/g)?.join(' ⸰ ')}  ꕤ ˎˊ˗
+
+> ⌛ ⋮ *10 segundos de magia*  
+> 🍒 ࣪𓂃 *¡Consejito dale rapidito!* ˚₊‧꒰ა ♡ ໒꒱ ‧₊˚`
               }),
               footer: proto.Message.InteractiveMessage.Footer.fromObject({
                 text: "ᴄᴏᴘɪᴀ ᴇʟ ᴄᴏᴅɪɢᴏ ᴀǫᴜɪ ᴀʙᴀᴊᴏ 🌺"
