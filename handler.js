@@ -416,21 +416,21 @@ try {
                     await this.groupParticipantsUpdate(m.chat, [sender], 'remove')
 
                     await this.sendMessage(m.chat, {
-                        text: `╭─「 🚫 *PAÍS BLOQUEADO* 🚫 」
-│ 
-│ *ⓘ Usuario de país bloqueado detectado*
-│ 
-│ 📋 *Información:*
-│ ├ Usuario: ${userCountry}
-│ ├ País: ${countryName}
-│ ├ Razón: País en lista de bloqueados
-│ ├ Acción: Expulsado del grupo
-│ 
-│ 📋 *Lista de países bloqueados:*
+                        text: `╭─「 🚫 *الدُوَل المحظورة* 🚫 」
+│
+│ *ⓘ تم اكتشاف مستخدم من دولة محظورة*
+│
+│ 📋 *المعلومات:*
+│ ├ المستخدم: ${userCountry}
+│ ├ الدولة: ${countryName}
+│ ├ السبب: الدولة ضمن قائمة الحظر
+│ ├ الإجراء: تم طرده من المجموعة
+│
+│ 📋 *قائمة الدول المحظورة:*
 │ ${chat.paisesBloqueados.map(p => `├ ${getCountryName(p)}`).join('\n')}
-│ 
-│ 💡 *Para modificar:*
-│ └ Use .bloquepais add/remove/list
+│
+│ 💡 *للتعديل:*
+│ └ استخدم الأمر:.bloquepais add/remove/list
 ╰─◉`.trim(),
                         mentions: [sender]
                     })
@@ -579,7 +579,7 @@ global.db.data.users[m.sender].commands++
 if (chat) {
 const botId = this.user.jid
 if (name !== "group-banchat.js" && chat?.isBanned && !isROwner) {
-const aviso = `El bot ${global.botname || 'Bot'} está desactivado en este grupo\n\n Un administrador puede activarlo con el comando:\n ${usedPrefix}bot on`.trim()
+const aviso = `البوت ${global.botname || 'البوت'} معطّل في هذه المجموعة\n\n يمكن لأحد المشرفين تفعيله باستخدام الأمر:\n ${usedPrefix}bot on`.trim()
 await m.reply(aviso)
 return
 }
