@@ -6,17 +6,13 @@ import moment from 'moment-timezone'
 var handler = m => m
 handler.all = async function (m) { 
 global.canalIdM = [
-  "120363404434164076@newsletter",
-  "120363403726798403@newsletter",
-  "120363425526390282@newsletter",
-  "120363404434164076@newsletter"
+  "120363405848897016@newsletter",
+  "120363405848897016@newsletter"
 ]
 
 global.canalNombreM = [
-  "꒰ ❄️ ITՏᑌKI ᑎᗩKᗩᑎO-ᐯ3 ᑌᑭᗪᗰTᗴ ☃️ ꒱", 
-  "𝆺𝅥 𝆭 ִ ֗ ❄ 𝐋𝐚𝐬 𝐐𝐮𝐢𝐧𝐭𝐢𝐥𝐥𝐢𝐬𝐚𝐬-𝐍𝐨𝐯𝐞𝐝𝐚𝐝 📢 ┆ 𝐂𝐡𝐚𝐧𝐧𝐞𝐥-𝐈𝐧𝐟𝐨 ☃️ ˚₊‧",
-  "𝗠𝗘𝗠𝗘𝗦 🧃➜ 𝗦𝗧𝗜𝗖𝗞𝗘𝗥 𝗘𝗗𝗜𝗧 𝗬 𝗠𝗔𝗦 💭",
-  "𝐥𝐞𝐨 » 𝐔𝐩𝐝𝐚𝐭𝐞 𝐂𝐡𝐚𝐧𝐧𝐞𝐥 ❄️"
+  "꒰ ❤️ SENKU BOT ❤️ ꒱", 
+  "🧫 SENKU BOT 🧪"
 ]
 
 global.channelRD = await getRandomChannel()
@@ -33,28 +29,18 @@ global.nombre = m.pushName || 'User-MD'
 global.packsticker = ``
 
 global.iconos = [
-  'https://cdn.russellxz.click/a015cecd.jpg',
-  'https://cdn.russellxz.click/d112a400.jpg',
-  'https://cdn.russellxz.click/40fb346f.jpg',
-  'https://cdn.russellxz.click/d8cefbd9.jpg',
-  'https://cdn.russellxz.click/1d6aa06f.jpg',
-  'https://cdn.russellxz.click/8df6a43c.jpg',
-  'https://cdn.russellxz.click/0d27e894.jpg',
-  'https://cdn.russellxz.click/98e7e0df.jpg',
-  'https://cdn.russellxz.click/b262e815.jpg',
-  'https://cdn.russellxz.click/f46d62d3.jpg',
-  'https://cdn.russellxz.click/36caddb4.jpg'
+  'https://files.catbox.moe/cmngcg.jpg',  'https://files.catbox.moe/cmngcg.jpg'
 ]
 global.icono = global.iconos[Math.floor(Math.random() * global.iconos.length)]
 
-global.wm = '© 𝐋𝐞𝐨  𝐗𝐬𝐳𝐲'
-global.wm3 = '⫹⫺ 𝙈𝙪𝙡𝙩𝙞-𝘿𝙚𝙫𝙞𝙘𝙚 💻'
-global.author = '👑 ᗰᗩᗪᗴ ᗷY ᒪᗴO 🧃'
-global.dev = '© 𝙾𝚆𝙽𝙴𝚁-𝙻𝙴𝙾 𝙳𝙴𝚅 👑'
-global.textbot = 'Itsuki-Nakano|IAV3 Leo'
-global.etiqueta = '@Leo Xzsy'
-global.gt = '© 𝐂𝐫𝐞𝐚𝐝𝐨 𝐏𝐨𝐫 𝐋𝐞𝐨𝐃𝐞𝐯 𝐈𝐭𝐬𝐮𝐤𝐢-𝐂𝐡𝐚𝐧 𝐓𝐡𝐞 𝐁𝐞𝐬𝐭 𝐁𝐨𝐭𝐬 𝐎𝐟 𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 🤖👑'
-global.me = '🌨️ 𝙸𝚃𝚂𝚄𝙺𝙸 𝙽𝙰𝙺𝙰𝙽𝙾 𝙼𝙴𝚆 𝚄𝙿𝙳𝙰𝚃𝙴 ☃️'
+global.wm = '❤️ SENKU BOT ❤️'
+global.wm3 = '🫠 SENKU BOT 🫠'
+global.author = '👑 AHMED ALIGUE ❤️'
+global.dev = '© AHMED ALIGUE 👑'
+global.textbot = 'SENKU BOT ❤️| AHMED ALIGUE 🧑‍💻'
+global.etiqueta = '🔬SENKU BOT🧬'
+global.gt = '🔬SENKU BOT🧬'
+global.me = '🧬SENKU BOT🔬'
 
 global.fkontak = { 
   key: { 
@@ -94,8 +80,8 @@ global.rcanal = {
   }
 }
 
-global.listo = '*Aqui tiene*'
-global.moneda = 'Yenes'
+global.listo = '*تفضل ❤️🫠*'
+global.moneda = 'SENKUCOINS'
 global.prefix = ['.', '!', '/', '#', '%']
 }
 
